@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace CoreLibrary.ModelDtos
 {
-    public class BookForCreationDto
+    public class BookForCreationDto : BookForManipulationDto
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        //public string Title { get; set; }
+        //public string Description { get; set; }
     }
 }

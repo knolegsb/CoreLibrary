@@ -14,6 +14,7 @@ using CoreLibrary.ModelDtos;
 using CoreLibrary.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace CoreLibrary
 {
@@ -82,6 +83,15 @@ namespace CoreLibrary
                 {
                     appBuilder.Run(async context =>
                     {
+                        var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+                        if(exceptionHandlerFeature != null)
+                        {
+                            var logger = loggerFactory.CreateLogger("Global exception logger");
+                            logger.LogError(500, 
+                                exceptionHandlerFeature.Error,
+                                exceptionHandlerFeature.Error.Message);
+                        }
+
                         context.Response.StatusCode = 500;
                         await context.Response.WriteAsync("An expected fault happened. Try again later.");
                     });
@@ -99,6 +109,8 @@ namespace CoreLibrary
                 cfg.CreateMap<Book, BookDto>();
                 cfg.CreateMap<AuthorForCreationDto, Author>();
                 cfg.CreateMap<BookForCreationDto, Book>();
+                cfg.CreateMap<BookForUpdateDto, Book>();
+                cfg.CreateMap<Book, BookForUpdateDto>();
             });
 
             libraryContext.LibraryContextSeedDataInitializer();
